@@ -25,6 +25,7 @@ def get_shortcuts():
             "focus_actions_dropdown": (_("Focus actions dropdown"), "a"),
             "focus_search": (_("Focus search field"), "/"),
             "toggle_sidebar": (_("Toggle sidebar"), "["),
+            "open_focused_row": (_("Open focused row"), "Enter"),
         },
         "changeform": {
             "save": (_("Save"), "Mod+s"),
