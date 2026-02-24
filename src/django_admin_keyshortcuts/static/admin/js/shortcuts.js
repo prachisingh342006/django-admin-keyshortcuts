@@ -15,6 +15,15 @@ import { install, uninstall } from './vendor/hotkey/hotkey.js';
         }
     }
 
+    function announceShortcutsStatus(enabled) {
+        const statusEl = document.getElementById('shortcuts-status');
+        if (statusEl) {
+            statusEl.textContent = enabled
+                ? 'Keyboard shortcuts enabled'
+                : 'Keyboard shortcuts disabled';
+        }
+    }
+
     function initShortcuts() {
         const toggleShortcuts = document.getElementById('toggle-shortcuts');
 
@@ -31,6 +40,7 @@ import { install, uninstall } from './vendor/hotkey/hotkey.js';
                 installShortcuts();
             }
             localStorage.setItem('django.admin.shortcutsEnabled', shortcutsEnabled);
+            announceShortcutsStatus(shortcutsEnabled === 'true');
         });
     }
 
@@ -42,10 +52,18 @@ import { install, uninstall } from './vendor/hotkey/hotkey.js';
 
     function showDialogOnClick() {
         const dialogButton = document.getElementById("open-shortcuts");
-        if(!dialogButton) {
+        if (!dialogButton) {
             return;
         }
         dialogButton.addEventListener("click", showShortcutsDialog);
+
+        // Return focus to the trigger button when the dialog is closed.
+        const dialog = document.getElementById("shortcuts-dialog");
+        if (dialog) {
+            dialog.addEventListener("close", function() {
+                dialogButton.focus();
+            });
+        }
     }
 
 

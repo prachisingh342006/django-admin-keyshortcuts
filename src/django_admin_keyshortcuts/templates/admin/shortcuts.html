@@ -2,21 +2,24 @@
 {% get_shortcuts as shortcuts %}
 
 {% block shortcut_buttons %}
-  <button id="open-shortcuts" data-hotkey="{{ shortcuts.global.show_dialog.1 }}">
-    <kbd>?</kbd>
+  <button id="open-shortcuts" data-hotkey="{{ shortcuts.global.show_dialog.1 }}" aria-label="{% translate 'Keyboard shortcuts' %}" title="{% translate 'Keyboard shortcuts' %}">
+    <kbd aria-hidden="true">?</kbd>
   </button>
   <a id="admin_index_link" href="{% url 'admin:index' %}" data-hotkey="{{ shortcuts.global.go_to_index.1 }}" hidden></a>
 {% endblock %}
 
-<dialog class="keyboard-shortcuts" id="shortcuts-dialog">
+<dialog class="keyboard-shortcuts" id="shortcuts-dialog" aria-labelledby="shortcuts-dialog-title">
   <div class="dialog-heading">
-    <h2>{% translate "Keyboard shortcuts" %}</h2>
+    <h2 id="shortcuts-dialog-title">{% translate "Keyboard shortcuts" %}</h2>
     <form method="dialog">
       <button aria-label="{% translate 'Close' %}">&#10006;</button>
     </form>
   </div>
-  <label for="toggle-shortcuts">{% translate "Use keyboard shortcuts" %}</label>
-  <input type="checkbox" id="toggle-shortcuts">
+  <div class="shortcuts-toggle">
+    <label for="toggle-shortcuts">{% translate "Use keyboard shortcuts" %}</label>
+    <input type="checkbox" id="toggle-shortcuts" role="switch" aria-label="{% translate 'Enable or disable keyboard shortcuts' %}">
+  </div>
+  <span id="shortcuts-status" class="visually-hidden" aria-live="polite"></span>
   {% block global_shortcuts %}
     <section>
       <h3>{% translate "Global" %}</h3>

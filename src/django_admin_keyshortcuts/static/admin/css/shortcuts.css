@@ -74,6 +74,22 @@ dt.shortcut-description {
   margin-left: .5em;
 }
 
+.shortcuts-toggle {
+  display: flex;
+  align-items: center;
+  margin: 0.5em 0;
+}
+
 #toggle-shortcuts:not(:checked) ~ section {
   opacity: 0.5; /* gray out shortcuts sections when toggle is off */
+}
+
+.keyboard-shortcuts .visually-hidden {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
 }

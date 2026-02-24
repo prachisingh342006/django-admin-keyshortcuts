@@ -53,22 +53,30 @@ class AdminKeyboardShorcutsTests(TestCase):
         response = self.client.get(reverse("test_admin_keyboard_shortcuts:index"))
         self.assertContains(
             response,
-            f'<button id="open-shortcuts" data-hotkey="{GlobalShortcuts.SHOW_DIALOG}">',
+            f'<button id="open-shortcuts" data-hotkey="{GlobalShortcuts.SHOW_DIALOG}"',
         )
         self.assertContains(
-            response, '<dialog class="keyboard-shortcuts" id="shortcuts-dialog">'
+            response,
+            '<dialog class="keyboard-shortcuts" id="shortcuts-dialog"'
+            ' aria-labelledby="shortcuts-dialog-title">',
         )
-        self.assertContains(response, '<input type="checkbox" id="toggle-shortcuts">')
+        self.assertContains(
+            response, '<input type="checkbox" id="toggle-shortcuts" role="switch"'
+        )
+        self.assertContains(
+            response,
+            '<span id="shortcuts-status" class="visually-hidden" aria-live="polite">',
+        )
 
     def test_shortcuts_dialog_not_on_login(self):
         self.client.logout()
         response = self.client.get(reverse("test_admin_keyboard_shortcuts:login"))
         self.assertNotContains(
             response,
-            f'<button id="open-shortcuts" data-hotkey="{GlobalShortcuts.SHOW_DIALOG}">',
+            f'<button id="open-shortcuts" data-hotkey="{GlobalShortcuts.SHOW_DIALOG}"',
         )
         self.assertNotContains(
-            response, '<dialog class="keyboard-shortcuts" id="shortcuts-dialog">'
+            response, '<dialog class="keyboard-shortcuts" id="shortcuts-dialog"'
         )
         self.assertNotContains(
             response, '<script src="/static/admin/js/shortcuts.js"></script>'
