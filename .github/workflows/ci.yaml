@@ -1,0 +1,89 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint-js:
+    name: ESLint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm run pretest
+
+  lint-python:
+    name: Ruff
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+
+  test:
+    name: Python ${{ matrix.python-version }}, Django ${{ matrix.django-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Django 4.2 (LTS) — Python 3.9–3.12
+          - python-version: "3.9"
+            django-version: "4.2"
+          - python-version: "3.12"
+            django-version: "4.2"
+          # Django 5.0 — Python 3.10–3.12
+          - python-version: "3.10"
+            django-version: "5.0"
+          - python-version: "3.12"
+            django-version: "5.0"
+          # Django 5.1 — Python 3.10–3.13
+          - python-version: "3.10"
+            django-version: "5.1"
+          - python-version: "3.13"
+            django-version: "5.1"
+          # Django 5.2 — Python 3.10–3.13
+          - python-version: "3.10"
+            django-version: "5.2"
+          - python-version: "3.13"
+            django-version: "5.2"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          uv pip install --system "django~=${{ matrix.django-version }}.0"
+          uv pip install --system -e .
+      - name: Run unit tests
+        run: python runtests.py
+
+  test-selenium:
+    name: Selenium (Chrome headless)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install dependencies
+        run: |
+          uv pip install --system "django~=5.2.0" selenium
+          uv pip install --system -e .
+      - name: Install Chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: stable
+      - name: Install ChromeDriver
+        uses: nanasess/setup-chromedriver@v2
+      - name: Run Selenium tests
+        run: python runtests.py --selenium chrome --headless
