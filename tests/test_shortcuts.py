@@ -21,6 +21,7 @@ class ChangeListShortcuts:
     FOCUS_PREV_ROW = "k"
     FOCUS_NEXT_ROW = "j"
     TOGGLE_ROW_SELECTION = "x"
+    OPEN_FOCUSED_ROW = "Enter"
     FOCUS_ACTIONS_DROPDOWN = "a"
     FOCUS_SEARCH = "/"
 
@@ -104,6 +105,22 @@ class AdminKeyboardShorcutsTests(TestCase):
 
         self.assertEqual(ChangeFormShortcuts.SAVE, "Mod+s")
         self.assertContains(response, "<kbd>⌘</kbd>+<kbd>s</kbd>")
+
+    def test_changelist_has_open_row_button(self):
+        response = self.client.get(
+            reverse("test_admin_keyboard_shortcuts:tests_language_changelist")
+        )
+        self.assertContains(
+            response,
+            f'<button id="keyshortcut-open-row-btn"'
+            f' data-hotkey="{ChangeListShortcuts.OPEN_FOCUSED_ROW}" hidden>',
+        )
+        self.assertContains(
+            response,
+            '<dt class="shortcut-description">Open focused row</dt>'
+            '<dd class="shortcut-keys"><kbd>Enter</kbd></dd>',
+            html=True,
+        )
 
 
 class SeleniumTests(AdminSeleniumTestCase):

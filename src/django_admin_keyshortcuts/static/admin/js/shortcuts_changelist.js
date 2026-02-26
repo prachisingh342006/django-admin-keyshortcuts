@@ -44,11 +44,26 @@
         actionsSelect.focus();
     }
 
+    function openFocusedRow() {
+        if (!currentCheckbox) {
+            return;
+        }
+        const row = currentCheckbox.closest("tr");
+        if (!row) {
+            return;
+        }
+        const link = row.querySelector("a");
+        if (link) {
+            window.location.href = link.href;
+        }
+    }
+
     function bindShortcutActionsToButtons() {
         document.getElementById("keyshortcut-prev-btn").addEventListener("click", focusPreviousCheckbox);
         document.getElementById("keyshortcut-next-btn").addEventListener("click", focusNextCheckbox);
         document.getElementById("keyshortcut-select-btn").addEventListener("click", selectCheckbox);
         document.getElementById("keyshortcut-select-actions-btn").addEventListener("click", selectActionsSelect);
+        document.getElementById("keyshortcut-open-row-btn").addEventListener("click", openFocusedRow);
     }
 
     if (document.readyState === "loading") {
